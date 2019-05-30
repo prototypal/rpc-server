@@ -6,6 +6,10 @@ class JsonApiChannelController extends Controller {
   async create(op: any) {
     return `JSONAPI: I've created a channel called ${op.data.attributes.name}`;
   }
+
+  async get(op: any) {
+    return `JSONAPI: I've found a channel by its ID ${op.ref.id}`;
+  }
 }
 
 class JsonRpcChannelController extends Controller {
@@ -51,6 +55,16 @@ router
       attributes: {
         name: "Joey"
       }
+    }
+  })
+  .then(console.log);
+
+router
+  .dispatch({
+    op: "get",
+    ref: {
+      type: "channel",
+      id: "123"
     }
   })
   .then(console.log);

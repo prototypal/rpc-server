@@ -1,7 +1,7 @@
 import Controller from "./controller";
 import { JsonRpc, JsonApiOperation } from "./types";
 
-const isJsonApi = (rpc: any) => rpc.op && rpc.ref && rpc.ref.type && rpc.data && rpc.data.attributes;
+const isJsonApi = (rpc: any) => rpc.op && rpc.ref && rpc.ref.type;
 const isJsonRpc = (rpc: any) => rpc.jsonrpc && rpc.method && rpc.params;
 
 export default class Router {
