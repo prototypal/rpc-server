@@ -1,5 +1,8 @@
+import Controller from "./controller";
+
 export type MethodRouteMap = {
-  [key: string]: string;
+  jsonapi: { [key: string]: { method: string; callback: string; type: typeof Controller } };
+  jsonrpc: { [key: string]: { method: string; callback: string; type: typeof Controller } };
 };
 
 export type RpcParameters = {

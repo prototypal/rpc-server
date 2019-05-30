@@ -1,8 +1,8 @@
 import Controller from "./controller";
-import RpcMethod from "./decorators/rpc-method";
 import Router from "./router";
-import Rpc from "./rpc";
 
-export { Controller, RpcMethod, Router, Rpc };
+export { Controller, Router };
 
+export * from "./formats/jsonapi";
+export * from "./formats/jsonrpc";
 export * from "./types";

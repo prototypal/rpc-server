@@ -1,36 +1,71 @@
-import { Router, Controller, RpcMethod, Rpc } from "../../src";
+import { Router, Controller, jsonApiType, jsonRpcMethod, jsonApiOperation } from "../../src";
 
-class ChannelController extends Controller {
-  @RpcMethod("chan_installApp")
+@jsonApiType("channel")
+class JsonApiChannelController extends Controller {
+  @jsonApiOperation("installApp")
+  async create(op: any) {
+    return `JSONAPI: I've created a channel called ${op.data.attributes.name}`;
+  }
+}
+
+class JsonRpcChannelController extends Controller {
+  @jsonRpcMethod("chan_installApp")
   async create({ name }: { name: string }) {
-    return `I've created a channel called ${name}`;
+    return `JSONRPC: I've created a channel called ${name}`;
+  }
+}
+
+@jsonApiType("channel2")
+class MixedFormatChannelController extends Controller {
+  @jsonRpcMethod("chan2_installApp")
+  @jsonApiOperation("installApp")
+  async create(data: any) {
+    if (data.op) {
+      return this.jsonApiCreate(data);
+    }
+
+    return this.jsonRpcCreate(data);
+  }
+
+  private async jsonApiCreate(op: any) {
+    return `MixedFormat/JSONAPI: I've created a channel called ${op.data.attributes.name}`;
+  }
+
+  private async jsonRpcCreate({ name }: { name: string }) {
+    return `MixedFormat/JSONRPC: I've created a channel called ${name}`;
   }
 }
 
 const router = new Router({
-  controllers: [ChannelController]
+  controllers: [JsonApiChannelController, JsonRpcChannelController, MixedFormatChannelController]
 });
 
+router.dispatch({ jsonrpc: "2.0", id: 1, method: "chan_installApp", params: { name: "Joey" } }).then(console.log);
 router
-  .dispatch(Rpc.fromJsonRpc({ jsonrpc: "2.0", id: 1, method: "chan_installApp", params: { name: "Joey" } }))
-  .then(response => {
-    console.log("JSONRPC: ", response);
-  });
-
-router
-  .dispatch(
-    Rpc.fromJsonApiOperation({
-      op: "installApp",
-      ref: {
-        type: "chan"
-      },
-      data: {
-        attributes: {
-          name: "Joey"
-        }
+  .dispatch({
+    op: "installApp",
+    ref: {
+      type: "channel"
+    },
+    data: {
+      attributes: {
+        name: "Joey"
       }
-    })
-  )
-  .then(response => {
-    console.log("JSONAPI: ", response);
-  });
+    }
+  })
+  .then(console.log);
+
+router.dispatch({ jsonrpc: "2.0", id: 1, method: "chan2_installApp", params: { name: "Foo" } }).then(console.log);
+router
+  .dispatch({
+    op: "installApp",
+    ref: {
+      type: "channel2"
+    },
+    data: {
+      attributes: {
+        name: "Foo"
+      }
+    }
+  })
+  .then(console.log);
