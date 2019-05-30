@@ -14,5 +14,23 @@ const router = new Router({
 router
   .dispatch(Rpc.fromJsonRpc({ jsonrpc: "2.0", id: 1, method: "chan_installApp", params: { name: "Joey" } }))
   .then(response => {
-    console.log(response);
+    console.log("JSONRPC: ", response);
+  });
+
+router
+  .dispatch(
+    Rpc.fromJsonApiOperation({
+      op: "installApp",
+      ref: {
+        type: "chan"
+      },
+      data: {
+        attributes: {
+          name: "Joey"
+        }
+      }
+    })
+  )
+  .then(response => {
+    console.log("JSONAPI: ", response);
   });
