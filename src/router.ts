@@ -1,4 +1,5 @@
 import Controller from "./controller";
+import Rpc from "./rpc";
 
 export default class Router {
   protected controllers: Array<typeof Controller>;
@@ -7,11 +8,11 @@ export default class Router {
     this.controllers = controllers;
   }
 
-  async dispatch(methodName: string, parameters: any[]) {
-    const ControllerClass = this.getControllerFor(methodName);
+  async dispatch(rpc: Rpc) {
+    const ControllerClass = this.getControllerFor(rpc.methodName);
     const controller = new ControllerClass();
 
-    return controller[ControllerClass.rpcMethods[methodName]](...parameters);
+    return controller[ControllerClass.rpcMethods[rpc.methodName]](rpc.parameters);
   }
 
   getControllerFor(methodName: string) {
