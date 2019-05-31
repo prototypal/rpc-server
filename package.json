@@ -1,11 +1,13 @@
 {
   "name": "rpc-server",
   "version": "0.0.1",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "author": "Joel Alejandro Villarreal Bertoldi <joel.a.villarreal@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "run:dummy": "tsnd test/dummy/app.ts"
+    "build": "rm -rf dist/ && tsc -b",
+    "run:dummy": "tsnd test/dummy/app.ts",
+    "postinstall": "rm -rf dist/ && tsc -b"
   },
   "devDependencies": {
     "ts-node-dev": "^1.0.0-pre.39",
