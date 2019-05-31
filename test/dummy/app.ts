@@ -1,4 +1,12 @@
-import { Router, Controller, jsonApiType, jsonRpcMethod, jsonApiOperation } from "../../src";
+import {
+  Router,
+  Controller,
+  jsonApiType,
+  jsonRpcMethod,
+  jsonApiOperation,
+  jsonRpcDeserialize,
+  jsonApiDeserialize
+} from "../../src";
 
 @jsonApiType("channel")
 class JsonApiChannelController extends Controller {
@@ -21,21 +29,13 @@ class JsonRpcChannelController extends Controller {
 
 @jsonApiType("channel2")
 class MixedFormatChannelController extends Controller {
-  @jsonRpcMethod("chan2_installApp")
   @jsonApiOperation("installApp")
-  async create(data: any) {
-    if (data.op) {
-      return this.jsonApiCreate(data);
-    }
-
-    return this.jsonRpcCreate(data);
-  }
-
-  private async jsonApiCreate(op: any) {
+  public async jsonApiCreate(op: any) {
     return `MixedFormat/JSONAPI: I've created a channel called ${op.data.attributes.name}`;
   }
 
-  private async jsonRpcCreate({ name }: { name: string }) {
+  @jsonRpcMethod("chan2_installApp")
+  public async jsonRpcCreate({ name }: { name: string }) {
     return `MixedFormat/JSONRPC: I've created a channel called ${name}`;
   }
 }
@@ -44,42 +44,79 @@ const router = new Router({
   controllers: [JsonApiChannelController, JsonRpcChannelController, MixedFormatChannelController]
 });
 
-router.dispatch({ jsonrpc: "2.0", id: 1, method: "chan_installApp", params: { name: "Joey" } }).then(console.log);
-router
-  .dispatch({
-    op: "installApp",
-    ref: {
-      type: "channel"
-    },
-    data: {
-      attributes: {
-        name: "Joey"
-      }
-    }
-  })
-  .then(console.log);
+(async () => {
+  console.log("Mapping", Controller.rpcMethods);
 
-router
-  .dispatch({
-    op: "get",
-    ref: {
-      type: "channel",
-      id: "123"
-    }
-  })
-  .then(console.log);
+  console.log();
 
-router.dispatch({ jsonrpc: "2.0", id: 1, method: "chan2_installApp", params: { name: "Foo" } }).then(console.log);
-router
-  .dispatch({
-    op: "installApp",
-    ref: {
-      type: "channel2"
-    },
-    data: {
-      attributes: {
-        name: "Foo"
-      }
-    }
-  })
-  .then(console.log);
+  console.log(
+    "chan_installApp RPC:",
+    await router.dispatch(
+      jsonRpcDeserialize({ jsonrpc: "2.0", id: 1, method: "chan_installApp", params: { name: "Joey" } })
+    )
+  );
+
+  console.log();
+
+  console.log(
+    "channel:installApp JsonApi:",
+    await router.dispatch(
+      jsonApiDeserialize({
+        op: "installApp",
+        ref: {
+          type: "channel"
+        },
+        data: {
+          attributes: {
+            name: "Joey"
+          }
+        }
+      })
+    )
+  );
+
+  console.log();
+
+  console.log(
+    "channel:get JsonApi:",
+    await router.dispatch(
+      jsonApiDeserialize({
+        op: "get",
+        ref: {
+          type: "channel",
+          id: "123"
+        }
+      })
+    )
+  );
+
+  console.log();
+
+  console.log(
+    "chan2_installApp RPC:",
+    await router.dispatch(
+      jsonRpcDeserialize({ jsonrpc: "2.0", id: 1, method: "chan2_installApp", params: { name: "Foo" } })
+    )
+  );
+
+  console.log();
+
+  console.log(
+    "channel2:installApp JSONAPI",
+    await router.dispatch(
+      jsonApiDeserialize({
+        op: "installApp",
+        ref: {
+          type: "channel2"
+        },
+        data: {
+          attributes: {
+            name: "Foo"
+          }
+        }
+      })
+    )
+  );
+
+  console.log();
+})();
