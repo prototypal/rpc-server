@@ -1,5 +1,5 @@
 import Controller from "../controller";
-import { JsonRpc, Rpc } from "../types";
+import { JsonRpc, Rpc, JsonRpcResponse } from "../types";
 
 export function jsonRpcMethod(name: string) {
   return (target: Controller, propertyKey: string) => {
@@ -16,5 +16,13 @@ export function jsonRpcDeserialize(payload: JsonRpc): Rpc {
   return {
     methodName: payload.method,
     parameters: payload.params
+  };
+}
+
+export function jsonRpcSerializeAsResponse(result: any, id: number): JsonRpcResponse {
+  return {
+    jsonrpc: "2.0",
+    result,
+    id
   };
 }

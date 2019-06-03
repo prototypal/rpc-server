@@ -25,11 +25,28 @@ export type JsonApiOperation = {
   meta?: any;
 };
 
-export type JsonRpc = {
-  jsonrpc: string;
+export type JsonRpcProtocolV2 = {
+  jsonrpc: "2.0";
+};
+
+export type JsonRpc = JsonRpcProtocolV2 & {
   method: string;
-  params: RpcParameters;
+  params?: RpcParameters;
   id: number;
+};
+
+export type JsonRpcResponse = JsonRpcProtocolV2 & {
+  result: any;
+  id: number;
+};
+
+export type JsonRpcError = JsonRpcProtocolV2 & {
+  jsonrpc: string;
+  error: {
+    code: number;
+    message: string;
+    data: any;
+  };
 };
 
 export type Rpc = {
