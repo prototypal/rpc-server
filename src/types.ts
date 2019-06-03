@@ -4,9 +4,11 @@ export type MethodRouteMap = {
   [key: string]: { method: string; callback: string; type: typeof Controller };
 };
 
-export type RpcParameters = {
-  [key: string]: string | string[] | number | number[] | boolean | boolean[] | RpcParameters;
-};
+export type RpcParameters =
+  | {
+      [key: string]: any;
+    }
+  | any[];
 
 export type JsonApiOperation = {
   op: string;
