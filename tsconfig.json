@@ -8,11 +8,7 @@
     "declaration": true,
     "skipLibCheck": true,
     "sourceMap": true,
-    "experimentalDecorators": true,
-    "baseUrl": ".",
-    "paths": {
-      "formats/*": ["src/formats/*"]
-    }
+    "experimentalDecorators": true
   },
   "include": ["src/**/*"]
 }
