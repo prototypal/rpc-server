@@ -15,7 +15,8 @@ export function jsonRpcMethod(name: string) {
 export function jsonRpcDeserialize(payload: JsonRpc): Rpc {
   return {
     methodName: payload.method,
-    parameters: payload.params
+    parameters: payload.params,
+    id: payload.id
   };
 }
 

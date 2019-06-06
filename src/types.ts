@@ -52,4 +52,5 @@ export type JsonRpcError = JsonRpcProtocolV2 & {
 export type Rpc = {
   methodName: string;
   parameters: RpcParameters;
+  id?: number;
 };
