@@ -35,8 +35,10 @@ export type JsonRpc = JsonRpcProtocolV2 & {
   id: number;
 };
 
-export type JsonRpcResponse = JsonRpcProtocolV2 & {
+export type JsonRpcNotification = JsonRpcProtocolV2 & {
   result: any;
+};
+export type JsonRpcResponse = JsonRpcNotification & {
   id: number;
 };
 
