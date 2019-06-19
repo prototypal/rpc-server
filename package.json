@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rm -rf dist/ && tsc -b",
     "run:dummy": "tsnd test/dummy/app.ts",
-    "postinstall": "rm -rf dist/ && tsc -b"
+    "prepublishOnly": "yarn build"
   },
   "devDependencies": {
     "ts-node-dev": "^1.0.0-pre.39",
